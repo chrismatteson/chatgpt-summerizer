@@ -1,0 +1,2 @@
+CREATE TABLE IF NOT EXISTS activity (id PRIMARY KEY, primaryEmail TEXT, timestamp TEXT, serviceName TEXT, activityType TEXT, content TEXT);
+CREATE TABLE IF NOT EXISTS template (primaryEmail PRIMARY KEY, response TEXT)

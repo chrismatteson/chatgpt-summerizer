@@ -1,0 +1,48 @@
+spin_manifest_version = "1"
+authors = ["Chris Matteson <chris.matteson@gmail.com>"]
+description = ""
+name = "summerizer"
+trigger = { type = "http", base = "/" }
+version = "0.1.0"
+
+[variables]
+openai_key = { default = "kv" }
+auth_token = { default = "kv" }
+
+[[component]]
+id = "store"
+source = "store/target/store.wasm"
+key_value_stores = ["default"]
+exclude_files = ["**/node_modules"]
+sqlite_databases = ["default"]
+[component.config]
+auth_token = "{{ auth_token }}"
+[component.trigger]
+route = "/..."
+[component.build]
+command = "npm run build"
+workdir = "store"
+
+[[component]]
+id = "trigger"
+source = "trigger/target/trigger.wasm"
+key_value_stores = ["default"]
+allowed_http_hosts = ["api.openai.com"]
+exclude_files = ["**/node_modules"]
+sqlite_databases = ["default"]
+[component.config]
+openai_key = "{{ openai_key }}"
+auth_token = "{{ auth_token }}"
+[component.trigger]
+route = "/trigger"
+[component.build]
+command = "npm run build"
+workdir = "trigger"
+
+[[component]]
+source = { url = "https://github.com/radu-matei/spin-kv-explorer/releases/download/v0.9.0/spin-kv-explorer.wasm", digest = "sha256:07f5f0b8514c14ae5830af0f21674fd28befee33cd7ca58bc0a68103829f2f9c" }
+id = "kv-explorer"
+# add or remove stores you want to explore here
+key_value_stores = ["default"]
+[component.trigger]
+route = "/internal/kv-explorer/..."
